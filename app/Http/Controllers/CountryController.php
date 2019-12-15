@@ -17,18 +17,18 @@ class CountryController extends Controller
   {
     try
     {
-      $httpClient = new Client();
+      $httpClient = new Client(['http_errors' => false]);
       $response = $httpClient->request('GET', Constants::REST_COUNTRIES_API_URL);
       if ($response->getStatusCode() == 200)
       {
         $countries = json_decode($response->getBody()->getContents());
         return response()->json($countries, 200);
       }
-      return response()->json(null, 200);
+      return response()->json(null, 404);
     }
     catch (Exception $e)
     {
-      return response()->json($e, 400);
+      return response()->json($e, 404);
     }
   }
 }
