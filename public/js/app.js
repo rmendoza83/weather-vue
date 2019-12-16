@@ -73159,7 +73159,7 @@ var render = function() {
                         _c("img", {
                           attrs: {
                             src:
-                              "http://openweathermap.org/img/wn/" +
+                              "https://openweathermap.org/img/wn/" +
                               _vm.weatherData.weather[0].icon +
                               "@2x.png"
                           }

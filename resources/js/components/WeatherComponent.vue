@@ -69,7 +69,7 @@
           </div>
           <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
-              <img :src="'http://openweathermap.org/img/wn/' + weatherData.weather[0].icon + '@2x.png'" />
+              <img :src="'https://openweathermap.org/img/wn/' + weatherData.weather[0].icon + '@2x.png'" />
             </div>
           </div>
           <div class="row">
