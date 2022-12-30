@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\WeatherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,5 +15,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('countries', 'CountryController@getCountries');
-Route::post('weather', 'WeatherController@getWeather');
+Route::get('countries', [CountryController::class, 'getCountries']);
+Route::post('weather', [WeatherController::class, 'getWeather']);
+Route::get('info', function () {
+    return phpinfo();
+});
