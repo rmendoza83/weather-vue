@@ -37,11 +37,10 @@ jobs:
             sudo rm -R *
             cp -r /home/deployer/weather-vue/. .
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-            cp -r .env.demo .env
-            php artisan migrate:fresh
+            cp -r .env.example .env
+            php artisan key:generate
             php artisan config:clear
             php artisan cache:clear
-            php artisan auth:clear-resets
             php artisan route:cache
             php artisan config:cache
             npm install
