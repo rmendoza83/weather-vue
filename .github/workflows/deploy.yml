@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Copy repository contents via scp
+        uses: appleboy/scp-action@master
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          PORT: ${{ secrets.SSH_PORT }}
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          source: "."
+          target: "/home/deployer/weather-vue"
+
+      - name: Deploy the application into VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          USERNAME: ${{ secrets.SSH_USERNAME }}
+          PORT: ${{ secrets.SSH_PORT }}
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/weather
+            php artisan down
+            sudo rm -R *
+            cp -r /home/deployer/weather-vue/. .
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            cp -r .env.demo .env
+            php artisan migrate:fresh
+            php artisan config:clear
+            php artisan cache:clear
+            php artisan auth:clear-resets
+            php artisan route:cache
+            php artisan config:cache
+            npm install
+            npm ci
+            npm run build
+            sudo chmod -R g=rwx .
+            sudo chmod -R o=rx .
+            sudo chgrp -R www-data .
+            ls -la
