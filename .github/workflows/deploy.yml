@@ -22,7 +22,7 @@ jobs:
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
           source: "."
-          target: "/home/deployer/weather-vue"
+          target: "/home/deployer/deployment/weather"
 
       - name: Deploy the application into VPS
         uses: appleboy/ssh-action@master
@@ -32,21 +32,4 @@ jobs:
           PORT: ${{ secrets.SSH_PORT }}
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/weather
-            php artisan down
-            sudo rm -R *
-            cp -r /home/deployer/weather-vue/. .
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-            cp -r .env.example .env
-            php artisan key:generate
-            php artisan config:clear
-            php artisan cache:clear
-            php artisan route:cache
-            php artisan config:cache
-            npm install
-            npm ci
-            npm run build
-            sudo chmod -R g=rwx .
-            sudo chmod -R o=rx .
-            sudo chgrp -R www-data .
-            ls -la
+            ./deploy/weather/deploy.sh
